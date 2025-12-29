@@ -74,16 +74,6 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ theme = 'light' }) => {
   if (showItinerary && routeResult) {
     return (
       <div className={`flex flex-col h-full animate-in slide-in-from-right duration-300 relative z-[1002] ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
-        <header className={`px-6 py-4 flex items-center justify-between border-b shrink-0 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-50'} z-[1003]`}>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#FF4B3A] rounded-xl flex items-center justify-center text-white font-black text-xs shadow-lg shadow-red-100">M</div>
-            <h1 className={`font-extrabold text-xl tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>Metro<span className={isDark ? 'text-slate-600' : 'text-slate-300'}>Track</span></h1>
-          </div>
-          <button onClick={() => setShowItinerary(false)} className={`p-2.5 rounded-full ${isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-50 text-slate-400'}`}>
-            <X size={20} />
-          </button>
-        </header>
-
         <div className="flex-1 overflow-y-auto no-scrollbar pb-32">
           <div className="relative h-60 bg-slate-100 overflow-hidden z-0">
             <MapContainer
