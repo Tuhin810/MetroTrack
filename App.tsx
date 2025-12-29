@@ -86,33 +86,39 @@ const App: React.FC = () => {
         {renderView()}
       </main>
 
-      {/* Bottom Navigation */}
-      <nav className={`h-20 ${theme === 'dark' ? 'bg-slate-900/95 border-slate-800' : 'bg-white/95 border-slate-100'} backdrop-blur-xl border-t flex items-center justify-around px-4 sticky bottom-0 z-40 pb-safe`}>
-        <NavItem
-          active={activeView === 'map'}
-          icon={<Map size={24} />}
-          label="Map"
-          onClick={() => { setActiveView('map'); setInitialStation(null); }}
-        />
-        <NavItem
-          active={activeView === 'search'}
-          icon={<Search size={24} />}
-          label="Search"
-          onClick={() => setActiveView('search')}
-        />
-        <NavItem
-          active={activeView === 'timings'}
-          icon={<Clock size={24} />}
-          label="Timings"
-          onClick={() => setActiveView('timings')}
-        />
-        <NavItem
-          active={activeView === 'tickets'}
-          icon={<Ticket size={24} />}
-          label="Tickets"
-          onClick={() => setActiveView('tickets')}
-        />
-      </nav>
+      {/* Bottom Navigation - Modern Floating Style */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-4 w-full max-w-md">
+        <nav className={`rounded-[28px] p-2 flex items-center justify-around shadow-2xl ${theme === 'dark' ? 'bg-slate-900/90 shadow-black/40' : 'bg-white shadow-slate-400/20'} backdrop-blur-2xl`}>
+          <NavItem
+            active={activeView === 'map'}
+            icon={<Map size={22} />}
+            label="Map"
+            onClick={() => { setActiveView('map'); setInitialStation(null); }}
+            theme={theme}
+          />
+          <NavItem
+            active={activeView === 'search'}
+            icon={<Search size={22} />}
+            label="Routes"
+            onClick={() => setActiveView('search')}
+            theme={theme}
+          />
+          <NavItem
+            active={activeView === 'timings'}
+            icon={<Clock size={22} />}
+            label="Times"
+            onClick={() => setActiveView('timings')}
+            theme={theme}
+          />
+          <NavItem
+            active={activeView === 'tickets'}
+            icon={<Ticket size={22} />}
+            label="Tickets"
+            onClick={() => setActiveView('tickets')}
+            theme={theme}
+          />
+        </nav>
+      </div>
       {/* Map-specific theme toggle when in map view */}
       {activeView === 'map' && (
         <button
@@ -131,18 +137,23 @@ interface NavItemProps {
   icon: React.ReactNode;
   label: string;
   onClick: () => void;
+  theme: 'light' | 'dark';
 }
 
-const NavItem: React.FC<NavItemProps> = ({ active, icon, label, onClick }) => (
+const NavItem: React.FC<NavItemProps> = ({ active, icon, label, onClick, theme }) => (
   <button
     onClick={onClick}
-    className={`flex flex-col items-center justify-center w-20 transition-all duration-200 ${active ? 'text-[#FF4B3A]' : 'text-slate-400'}`}
+    className={`flex flex-col items-center justify-center py-2.5 px-4 rounded-2xl transition-all duration-300 ${active
+        ? 'bg-[#FF4B3A] text-white shadow-lg shadow-red-500/30'
+        : theme === 'dark'
+          ? 'text-slate-400 hover:text-slate-200'
+          : 'text-slate-500 hover:text-slate-700'
+      }`}
   >
-    <div className={`mb-1 transition-all ${active ? 'scale-110' : ''}`}>
+    <div className="mb-0.5">
       {icon}
     </div>
-    <span className={`text-[10px] font-bold uppercase tracking-widest ${active ? 'opacity-100' : 'opacity-60'}`}>{label}</span>
-    {/* {active && <div className="w-1.5 h-1.5 bg-[#FF4B3A] rounded-full mt-1.5" />} */}
+    <span className="text-[10px] font-bold">{label}</span>
   </button>
 );
 
