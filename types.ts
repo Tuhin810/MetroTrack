@@ -24,4 +24,4 @@ export interface LiveTrain {
   nextStation: string;
 }
 
-export type View = 'map' | 'search' | 'timings' | 'tickets';
+export type View = 'map' | 'search' | 'timings' | 'tickets' | 'profile';

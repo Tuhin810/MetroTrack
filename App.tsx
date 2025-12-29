@@ -4,6 +4,7 @@ import { View, Station } from './types';
 import LiveMap from './components/LiveMap';
 import RoutePlanner from './components/RoutePlanner';
 import Timings from './components/Timings';
+import Profile from './components/Profile';
 import { Map, Search, Clock, Ticket, Bell, User, Sun, Moon } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -37,6 +38,7 @@ const App: React.FC = () => {
       case 'map': return <LiveMap theme={theme} onViewSchedule={handleViewSchedule} />;
       case 'search': return <RoutePlanner theme={theme} />;
       case 'timings': return <Timings theme={theme} initialStation={initialStation} onStationCleared={() => setInitialStation(null)} />;
+      case 'profile': return <Profile theme={theme} onThemeToggle={toggleTheme} />;
       case 'tickets': return (
         <div className={`flex flex-col items-center justify-center h-full p-8 text-center space-y-6 ${theme === 'dark' ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}>
           <div className={`w-24 h-24 ${theme === 'dark' ? 'bg-slate-800 text-blue-400' : 'bg-blue-50 text-blue-600'} rounded-full flex items-center justify-center`}>
@@ -63,14 +65,16 @@ const App: React.FC = () => {
       {activeView !== 'map' && (
         <header className={`px-6 py-4 flex items-center justify-between ${theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-100'} backdrop-blur-md sticky top-0 z-30 border-b`}>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#FF4B3A] rounded-xl flex items-center justify-center text-white font-black text-xs">M</div>
+            <div className="w-8 h-8 bg-[#FF4B3A] rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
+              <img src="/favicon_io/apple-touch-icon.png" alt="MetroTrack Logo" className="w-full h-full object-cover" />
+            </div>
             <h1 className={`font-extrabold text-xl tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>Metro<span className="text-[#FF4B3A]">Track</span></h1>
           </div>
           <div className="flex gap-2">
             <button onClick={toggleTheme} className={`p-2.5 rounded-full ${theme === 'dark' ? 'bg-slate-800 text-yellow-400' : 'bg-slate-50 text-slate-600'} active:scale-90 transition-all`}>
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
             </button>
-            <button className={`p-2.5 rounded-full ${theme === 'dark' ? 'bg-slate-800 text-slate-400' : 'bg-slate-50 text-slate-600'} active:bg-slate-100 transition-colors`}>
+            <button onClick={() => setActiveView('profile')} className={`p-2.5 rounded-full ${theme === 'dark' ? 'bg-slate-800 text-slate-400' : 'bg-slate-50 text-slate-600'} active:bg-slate-100 transition-colors`}>
               <User size={20} />
             </button>
           </div>
