@@ -16,6 +16,10 @@ const Timings: React.FC<TimingsProps> = ({ initialStation, onStationCleared, the
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeFullChart, setActiveFullChart] = useState<MetroLine | null>(null);
   const [viewingStationSchedule, setViewingStationSchedule] = useState<boolean>(false);
+  const [filterTime, setFilterTime] = useState(() => {
+    const now = new Date();
+    return now.getHours() * 60 + now.getMinutes();
+  });
 
   const isDark = theme === 'dark';
 
@@ -113,41 +117,101 @@ const Timings: React.FC<TimingsProps> = ({ initialStation, onStationCleared, the
     return { ...getStationTimingSummary(selectedStation, line), line, nextTrainMinutes };
   }, [selectedStation]);
 
+
   if (viewingStationSchedule && selectedStation && stationTimings) {
     const line = stationTimings.line;
-    const upTimes = generateFullDaySchedule(selectedStation, line, 'up').map(t => formatTime(t));
-    const downTimes = generateFullDaySchedule(selectedStation, line, 'down').map(t => formatTime(t));
+
+    // Generate all trains with direction info
+    const upTimesRaw = generateFullDaySchedule(selectedStation, line, 'up');
+    const downTimesRaw = generateFullDaySchedule(selectedStation, line, 'down');
+
+    const allTrains = [
+      ...upTimesRaw.map(t => ({
+        time: t,
+        direction: 'up',
+        from: line.stations[0].name,
+        to: line.stations[line.stations.length - 1].name
+      })),
+      ...downTimesRaw.map(t => ({
+        time: t,
+        direction: 'down',
+        from: line.stations[line.stations.length - 1].name,
+        to: line.stations[0].name
+      }))
+    ].sort((a, b) => a.time - b.time);
+
+    // Filter to show next 10 trains after selected time
+    const nextTrains = allTrains.filter(t => t.time >= filterTime).slice(0, 10);
+
+    const formatFilterTime = (mins: number) => {
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    };
 
     return (
-      <div className={`flex flex-col h-full animate-in slide-in-from-right duration-300 ${isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}>
-        <div className={`px-6 py-6 border-b flex items-center justify-between sticky top-0 z-10 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
-          <button onClick={() => setViewingStationSchedule(false)} className="text-slate-400 p-2 -ml-2"><ArrowLeft size={24} /></button>
-          <div className="flex-1 text-center">
-            <h2 className="text-lg font-black">{selectedStation.name}</h2>
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Full Day Schedule</p>
+      <div className={`flex flex-col h-full animate-in slide-in-from-right duration-300 ${isDark ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+        <div className={`px-6 py-5 border-b sticky top-0 z-10 ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-100'}`}>
+          <div className="flex items-center gap-3 mb-4">
+            <button onClick={() => setViewingStationSchedule(false)} className="text-slate-400 p-2 -ml-2 hover:text-slate-600 transition-colors">
+              <ArrowLeft size={24} />
+            </button>
+            <div className="flex-1">
+              <h2 className={`text-xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>{selectedStation.name}</h2>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Train Schedule</p>
+            </div>
           </div>
-          <div className="w-10" />
+
+          {/* Time Filter */}
+          <div className={`rounded-2xl border p-3 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+            <label className="text-[9px] font-black text-slate-400 uppercase tracking-wide mb-2 block">Filter From Time</label>
+            <input
+              type="time"
+              value={formatFilterTime(filterTime)}
+              onChange={(e) => {
+                const [h, m] = e.target.value.split(':').map(Number);
+                setFilterTime(h * 60 + m);
+              }}
+              className={`w-full text-base font-bold outline-none bg-transparent ${isDark ? 'text-white' : 'text-slate-900'}`}
+            />
+          </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 no-scrollbar space-y-8">
-          {[
-            { label: `Toward ${line.stations[line.stations.length - 1].name}`, times: upTimes, alpha: '1' },
-            { label: `Toward ${line.stations[0].name}`, times: downTimes, alpha: '0.5' }
-          ].map((sec, idx) => (
-            <section key={idx}>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-2 h-6 rounded-full" style={{ backgroundColor: line.color, opacity: sec.alpha }} />
-                <h3 className="text-sm font-black uppercase tracking-wider">{sec.label}</h3>
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                {sec.times.map((time, i) => (
-                  <div key={i} className={`p-3 rounded-2xl text-center border ${isDark ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-slate-50 border-slate-100 text-slate-700'}`}>
-                    <p className="text-xs font-black">{time}</p>
+        <div className="flex-1 overflow-y-auto p-6 no-scrollbar space-y-3 pb-32">
+          {nextTrains.length > 0 ? nextTrains.map((train, idx) => (
+            <div key={idx} className={`rounded-2xl p-4 border shadow-sm ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-8 rounded-full" style={{ backgroundColor: line.color }} />
+                  <div>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-wide">
+                      {train.direction === 'up' ? 'Toward' : 'Toward'}
+                    </p>
+                    <p className={`text-sm font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      {train.to}
+                    </p>
                   </div>
-                ))}
+                </div>
+                <div className="text-right">
+                  <p className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {formatTime(train.time)}
+                  </p>
+                </div>
               </div>
-            </section>
-          ))}
+
+              <div className={`pt-3 border-t flex items-center justify-between ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
+                <div className="flex items-center gap-2">
+                  <MapPin size={14} className="text-slate-400" />
+                  <p className="text-xs text-slate-400 font-medium">From <span className={`font-bold ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{train.from}</span></p>
+                </div>
+                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">{line.name}</p>
+              </div>
+            </div>
+          )) : (
+            <div className="text-center py-12">
+              <p className="text-slate-400 font-medium">No trains available after selected time</p>
+            </div>
+          )}
         </div>
       </div>
     );
