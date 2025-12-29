@@ -52,7 +52,44 @@ const Timings: React.FC<TimingsProps> = ({ initialStation, onStationCleared, the
       const isPeak = (hour >= 9 && hour < 11.5) || (hour >= 17 && hour < 20);
       currentTime += isPeak ? 7 : 12;
     }
-    return times.filter(t => t >= startTime && t <= (endTime + 30)).map(t => formatTime(t));
+    return times.filter(t => t >= startTime && t <= (endTime + 30));
+  };
+
+  const getNextTrainTime = (station: Station, line: MetroLine) => {
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    // Generate schedules for both directions
+    const upTimes = generateFullDaySchedule(station, line, 'up');
+    const downTimes = generateFullDaySchedule(station, line, 'down');
+
+    // Combine and sort all times
+    const allTimes = [...upTimes, ...downTimes].sort((a, b) => a - b);
+
+    // Find next train
+    const nextTrain = allTimes.find(t => t > currentMinutes);
+
+    if (nextTrain) {
+      const minutesUntil = nextTrain - currentMinutes;
+      return minutesUntil;
+    }
+
+    return null;
+  };
+
+  const formatWaitTime = (minutes: number | null) => {
+    if (minutes === null) return 'N/A';
+
+    if (minutes < 60) {
+      return `${minutes}m`;
+    } else {
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      if (mins === 0) {
+        return `${hours}h`;
+      }
+      return `${hours}h ${mins}m`;
+    }
   };
 
   const getStationTimingSummary = (station: Station, line: MetroLine) => {
@@ -72,13 +109,14 @@ const Timings: React.FC<TimingsProps> = ({ initialStation, onStationCleared, the
     if (!selectedStation) return null;
     const line = METRO_LINES.find(l => l.stations.some(s => s.id === selectedStation.id));
     if (!line) return null;
-    return { ...getStationTimingSummary(selectedStation, line), line };
+    const nextTrainMinutes = getNextTrainTime(selectedStation, line);
+    return { ...getStationTimingSummary(selectedStation, line), line, nextTrainMinutes };
   }, [selectedStation]);
 
   if (viewingStationSchedule && selectedStation && stationTimings) {
     const line = stationTimings.line;
-    const upTimes = generateFullDaySchedule(selectedStation, line, 'up');
-    const downTimes = generateFullDaySchedule(selectedStation, line, 'down');
+    const upTimes = generateFullDaySchedule(selectedStation, line, 'up').map(t => formatTime(t));
+    const downTimes = generateFullDaySchedule(selectedStation, line, 'down').map(t => formatTime(t));
 
     return (
       <div className={`flex flex-col h-full animate-in slide-in-from-right duration-300 ${isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}`}>
@@ -236,7 +274,7 @@ const Timings: React.FC<TimingsProps> = ({ initialStation, onStationCleared, the
                 ))}
               </div>
               <div className={`pt-4 border-t flex items-center justify-between ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
-                <span className={`text-sm font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Next in <span className="text-blue-500">5m</span></span>
+                <span className={`text-sm font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Next in <span className="text-blue-500">{formatWaitTime(stationTimings.nextTrainMinutes)}</span></span>
                 <button onClick={() => setViewingStationSchedule(true)} className="text-xs font-black text-[#FF4B3A] flex items-center gap-2 uppercase tracking-wider group">
                   FULL CHART <ChevronRight size={16} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
                 </button>
