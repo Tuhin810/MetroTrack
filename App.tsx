@@ -8,7 +8,7 @@ import Profile from './components/Profile';
 import { Map, Search, Clock, Ticket, Bell, User, Sun, Moon } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<View>('map');
+  const [activeView, setActiveView] = useState<View>('search');
   const [initialStation, setInitialStation] = useState<Station | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
@@ -144,10 +144,10 @@ const NavItem: React.FC<NavItemProps> = ({ active, icon, label, onClick, theme }
   <button
     onClick={onClick}
     className={`flex flex-col items-center justify-center py-2.5 px-4 rounded-2xl transition-all duration-300 ${active
-        ? 'bg-[#FF4B3A] text-white shadow-lg shadow-red-500/30'
-        : theme === 'dark'
-          ? 'text-slate-400 hover:text-slate-200'
-          : 'text-slate-500 hover:text-slate-700'
+      ? 'bg-[#FF4B3A] text-white shadow-lg shadow-red-500/30'
+      : theme === 'dark'
+        ? 'text-slate-400 hover:text-slate-200'
+        : 'text-slate-500 hover:text-slate-700'
       }`}
   >
     <div className="mb-0.5">

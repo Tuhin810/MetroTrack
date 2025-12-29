@@ -299,10 +299,10 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
   return (
     <div className={`h-full w-full relative z-0 transition-colors duration-500 ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
       {/* Top gradient overlay */}
-      <div className={`absolute top-0 left-0 right-0 h-32 z-[500] pointer-events-none ${true ? 'bg-gradient-to-b from-slate-950/70 to-transparent' : 'bg-gradient-to-b from-slate-100/80 to-transparent'}`} />
+      <div className={`absolute top-0 left-0 right-0 h-32 z-[500] pointer-events-none ${true ? 'bg-gradient-to-b from-black/40 to-transparent' : 'bg-gradient-to-b from-slate-100/20 to-transparent'}`} />
 
       {/* Bottom gradient overlay */}
-      <div className={`absolute bottom-0 left-0 right-0 h-40 z-[500] pointer-events-none ${true ? 'bg-gradient-to-t from-slate-950/80 to-transparent' : 'bg-gradient-to-t from-slate-100/90 to-transparent'}`} />
+      <div className={`absolute bottom-0 left-0 right-0 h-40 z-[500] pointer-events-none ${true ? 'bg-gradient-to-t from-black/40 to-transparent' : 'bg-gradient-to-t from-slate-100/20 to-transparent'}`} />
 
       <WeatherWidget isDark={isDark} />
 
