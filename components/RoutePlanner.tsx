@@ -258,7 +258,9 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ theme = 'light' }) => {
         </div>
         <button
           onClick={() => { const tf = from; const tfq = fromQuery; setFrom(to); setFromQuery(toQuery); setTo(tf); setToQuery(tfq); }}
-          className={`absolute right-6 top-[30%] -translate-y-1/2 w-11 h-11 rounded-full flex items-center justify-center shadow-sm border active:rotate-180 transition-transform duration-500 ${isDark ? 'bg-slate-800 border-slate-700 text-blue-400' : 'bg-slate-50 border-slate-100 text-blue-600'}`}
+          className={`absolute right-6 top-[30%] -translate-y-1/2 w-11 h-11 rounded-full 
+            flex items-center justify-center shadow-sm border active:rotate-180 transition-transform duration-500 
+            ${isDark ? 'bg-slate-800 border-slate-700 text-blue-400' : 'bg-[#ff4b3a]  border-[#ff4b3a] text-white '}`}
         >
           <ArrowRightLeft size={18} className="rotate-90" />
         </button>

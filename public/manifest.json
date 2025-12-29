@@ -4,8 +4,8 @@
   "description": "Plan your Kolkata Metro journey with real-time schedules, route planning, and interactive maps",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0F172A",
-  "theme_color": "#FF4B3A",
+  "background_color": "#fff",
+  "theme_color": "#fff",
   "orientation": "portrait",
   "icons": [
     {

@@ -5,17 +5,17 @@ import L from 'leaflet';
 import { METRO_LINES, ALL_STATIONS, LINE_COLORS } from '../data/metroData';
 import { getLiveTrains, getDistance, findNearestStation, fetchRoute } from '../utils/tracker';
 import { LiveTrain, Station } from '../types';
-import { 
-  Search as SearchIcon, 
-  X, 
-  Navigation, 
-  LocateFixed, 
-  MapPin, 
-  Layers, 
-  Check, 
-  Clock, 
-  ChevronRight, 
-  Navigation2, 
+import {
+  Search as SearchIcon,
+  X,
+  Navigation,
+  LocateFixed,
+  MapPin,
+  Layers,
+  Check,
+  Clock,
+  ChevronRight,
+  Navigation2,
   ArrowUpRight,
   CircleStop,
   Footprints,
@@ -65,15 +65,15 @@ const trainIcon = (color: string, isDark: boolean) => L.divIcon({
   iconAnchor: [14, 14]
 });
 
-const MapController = ({ 
-  selectedStation, 
-  userLocation, 
+const MapController = ({
+  selectedStation,
+  userLocation,
   isNavigating,
   routeCoords,
   isFindingNearest
-}: { 
-  selectedStation: Station | null, 
-  userLocation: {lat: number, lng: number} | null,
+}: {
+  selectedStation: Station | null,
+  userLocation: { lat: number, lng: number } | null,
   isNavigating: boolean,
   routeCoords: [number, number][],
   isFindingNearest: boolean
@@ -93,7 +93,7 @@ const MapController = ({
     if (isNavigating && routeCoords.length > 0) {
       const bounds = L.latLngBounds(routeCoords);
       map.fitBounds(bounds, { padding: [80, 180], duration: 1.5 });
-    } 
+    }
     else if (userLocation && isFindingNearest) {
       map.flyTo([userLocation.lat, userLocation.lng], 16, { duration: 1 });
     }
@@ -172,19 +172,19 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [showResults, setShowResults] = useState(false);
-  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
-  
+  const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
+
   const [isFindingNearest, setIsFindingNearest] = useState(false);
   const [nearestResult, setNearestResult] = useState<{ station: Station, distance: number } | null>(null);
-  
+
   const [isNavigating, setIsNavigating] = useState(false);
   const [navMode, setNavMode] = useState<'walking' | 'driving'>('walking');
   const [navDistance, setNavDistance] = useState<number>(0);
   const [routeCoords, setRouteCoords] = useState<[number, number][]>([]);
-  
+
   const [visibleLines, setVisibleLines] = useState<string[]>(METRO_LINES.map(l => l.id));
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
+
   const watchIdRef = useRef<number | null>(null);
   const isDark = theme === 'dark';
 
@@ -197,7 +197,7 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
 
   const filteredStations = useMemo(() => {
     if (!searchQuery.trim()) return [];
-    return ALL_STATIONS.filter(s => 
+    return ALL_STATIONS.filter(s =>
       s.name.toLowerCase().includes(searchQuery.toLowerCase())
     ).slice(0, 5);
   }, [searchQuery]);
@@ -208,7 +208,7 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
     setShowResults(false);
   };
 
-  const updateRoute = async (loc: {lat: number, lng: number}, target: Station, mode: 'walking' | 'driving') => {
+  const updateRoute = async (loc: { lat: number, lng: number }, target: Station, mode: 'walking' | 'driving') => {
     const coords = await fetchRoute(loc, target, mode);
     setRouteCoords(coords);
   };
@@ -217,7 +217,7 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
     if (!nearestResult) return;
     setNavMode(mode);
     setIsNavigating(true);
-    
+
     if (userLocation) {
       await updateRoute(userLocation, nearestResult.station, mode);
     }
@@ -281,32 +281,32 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
   };
 
   const getETA = () => {
-    const speed = navMode === 'walking' ? 4.5 : 20; 
+    const speed = navMode === 'walking' ? 4.5 : 20;
     const minutes = (navDistance / speed) * 60;
     return Math.ceil(minutes);
   };
 
   const toggleLineVisibility = (lineId: string) => {
-    setVisibleLines(prev => 
+    setVisibleLines(prev =>
       prev.includes(lineId) ? prev.filter(id => id !== lineId) : [...prev, lineId]
     );
   };
 
-  const mapTileUrl = isDark 
+  const mapTileUrl = isDark
     ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
     : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
 
   return (
     <div className={`h-full w-full relative z-0 transition-colors duration-500 ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
       <WeatherWidget isDark={isDark} />
-      
+
       {/* Navigation Overlay (Header) */}
       {!isNavigating ? (
         <div className="absolute top-6 left-0 right-0 px-6 z-[1001] pointer-events-none">
           <div className="max-w-md mx-auto pointer-events-auto relative">
-            <div className={`flex items-center backdrop-blur-xl rounded-full shadow-2xl transition-all duration-300 px-6 py-4 border ${isDark ? 'bg-slate-900/90 border-slate-700 shadow-black/40' : 'bg-white/95 border-white/40 shadow-slate-300/40'} ${showResults && filteredStations.length > 0 ? 'rounded-b-none' : ''}`}>
+            <div className={`flex items-center backdrop-blur-xl rounded-full shadow-lg shadow-black/20 transition-all duration-300 px-6 py-4 border ${isDark ? 'bg-slate-900/90 border-slate-700 shadow-black/40' : 'bg-white/95 border-white/40 shadow-slate-300/40'} ${showResults && filteredStations.length > 0 ? 'rounded-b-none' : ''}`}>
               <SearchIcon className={isDark ? 'text-slate-500' : 'text-slate-400'} size={18} strokeWidth={3} />
-              <input 
+              <input
                 type="text"
                 placeholder="Find a station..."
                 className={`ml-3 flex-1 bg-transparent outline-none font-black text-sm placeholder:text-slate-500 ${isDark ? 'text-white' : 'text-slate-900'}`}
@@ -329,7 +329,7 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
             {showResults && filteredStations.length > 0 && (
               <div className={`absolute left-0 right-0 top-full mt-0 rounded-b-[28px] shadow-2xl border-x border-b overflow-hidden z-[1002] animate-in slide-in-from-top-2 duration-200 ${isDark ? 'bg-slate-900/95 border-slate-700 backdrop-blur-xl' : 'bg-white/95 border-white/40 backdrop-blur-xl'}`}>
                 {filteredStations.map((station) => (
-                  <button 
+                  <button
                     key={station.id}
                     onClick={() => handleSelectStation(station)}
                     className={`w-full px-6 py-4 text-left flex items-center justify-between border-t transition-colors ${isDark ? 'border-slate-800 hover:bg-slate-800/50' : 'border-slate-50 hover:bg-slate-50'}`}
@@ -349,15 +349,15 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
         <div className="absolute top-6 left-0 right-0 px-6 z-[1001]">
           <div className={`max-w-md mx-auto rounded-[32px] p-6 shadow-2xl flex items-center justify-between border ${isDark ? 'bg-slate-800 text-white border-slate-700' : 'bg-slate-900 text-white border-white/10'}`}>
             <div className="flex items-center gap-4">
-               <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                  <ArrowUpRight size={24} strokeWidth={3} />
-               </div>
-               <div>
-                  <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]">Navigating To</p>
-                  <h3 className="text-lg font-black truncate max-w-[160px]">{selectedStation?.name}</h3>
-               </div>
+              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <ArrowUpRight size={24} strokeWidth={3} />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]">Navigating To</p>
+                <h3 className="text-lg font-black truncate max-w-[160px]">{selectedStation?.name}</h3>
+              </div>
             </div>
-            <button 
+            <button
               onClick={stopNavigation}
               className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${isDark ? 'bg-slate-700 text-slate-300 hover:bg-red-500/20 hover:text-red-400' : 'bg-white/10 hover:bg-red-500/20 hover:text-red-400'}`}
             >
@@ -377,11 +377,10 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
                 <button
                   key={line.id}
                   onClick={() => toggleLineVisibility(line.id)}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-2xl transition-all ${
-                    visibleLines.includes(line.id) 
-                      ? (isDark ? 'bg-slate-800 text-white' : 'bg-slate-50 text-slate-900') 
-                      : (isDark ? 'text-slate-600 hover:bg-slate-800/50' : 'text-slate-300 hover:bg-slate-50/50')
-                  }`}
+                  className={`flex items-center justify-between px-3 py-2.5 rounded-2xl transition-all ${visibleLines.includes(line.id)
+                    ? (isDark ? 'bg-slate-800 text-white' : 'bg-slate-50 text-slate-900')
+                    : (isDark ? 'text-slate-600 hover:bg-slate-800/50' : 'text-slate-300 hover:bg-slate-50/50')
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: line.color }} />
@@ -395,14 +394,13 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
           <button onClick={() => setIsFilterOpen(!isFilterOpen)} className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center border-2 active:scale-90 transition-all ${isDark ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-white border-white text-slate-600'}`}>
             <Layers size={22} strokeWidth={2.5} />
           </button>
-          <button 
+          <button
             onClick={handleFindNearest}
             disabled={isFindingNearest}
-            className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center border-2 active:scale-90 transition-all ${
-              nearestResult 
-                ? 'bg-[#FF4B3A] text-white border-red-300' 
-                : (isDark ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-white border-white text-slate-600')
-            }`}
+            className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center border-2 active:scale-90 transition-all ${nearestResult
+              ? 'bg-[#FF4B3A] text-white border-red-300'
+              : (isDark ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-white border-white text-slate-600')
+              }`}
           >
             <Navigation2 size={22} strokeWidth={2.5} className={isFindingNearest ? 'animate-spin' : ''} />
           </button>
@@ -437,13 +435,13 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
 
             {!isNavigating ? (
               <div className="flex gap-4">
-                <button 
+                <button
                   onClick={() => startNavigation('walking')}
                   className="flex-1 bg-[#FF4B3A] text-white py-5 rounded-[24px] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-red-200"
                 >
                   <Footprints size={18} /> WALK
                 </button>
-                <button 
+                <button
                   onClick={() => startNavigation('driving')}
                   className={`flex-1 py-5 rounded-[24px] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl ${isDark ? 'bg-slate-800 text-white shadow-black border border-slate-700' : 'bg-slate-900 text-white shadow-slate-200'}`}
                 >
@@ -453,14 +451,14 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
             ) : (
               <div className="space-y-4">
                 <div className={`w-full h-2 rounded-full overflow-hidden ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
-                   <div 
-                    className="h-full bg-blue-600 transition-all duration-1000" 
-                    style={{ width: `${Math.min(100, Math.max(5, 100 - (navDistance * 50)))}%` }} 
-                   />
+                  <div
+                    className="h-full bg-blue-600 transition-all duration-1000"
+                    style={{ width: `${Math.min(100, Math.max(5, 100 - (navDistance * 50)))}%` }}
+                  />
                 </div>
                 <div className={`flex justify-between items-center text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-slate-600' : 'text-slate-300'}`}>
-                   <span>FOLLOW THE ROAD</span>
-                   <span>{navDistance < 0.1 ? 'ARRIVING' : `${(navDistance * 1000).toFixed(0)}m`}</span>
+                  <span>FOLLOW THE ROAD</span>
+                  <span>{navDistance < 0.1 ? 'ARRIVING' : `${(navDistance * 1000).toFixed(0)}m`}</span>
                 </div>
               </div>
             )}
@@ -469,25 +467,25 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
       )}
 
       <MapContainer center={initialCenter as [number, number]} zoom={12} style={{ height: '100%', width: '100%' }} zoomControl={false}>
-        <MapController 
-          selectedStation={selectedStation} 
-          userLocation={userLocation} 
-          isNavigating={isNavigating} 
+        <MapController
+          selectedStation={selectedStation}
+          userLocation={userLocation}
+          isNavigating={isNavigating}
           routeCoords={routeCoords}
           isFindingNearest={isFindingNearest}
         />
         <TileLayer url={mapTileUrl} attribution='&copy; CARTO' />
-        
+
         {METRO_LINES.filter(line => visibleLines.includes(line.id)).map(line => (
           <React.Fragment key={line.id}>
-            <Polyline 
+            <Polyline
               positions={line.stations.map(s => [s.lat, s.lng]) as [number, number][]}
               color={line.color} weight={8} opacity={isDark ? 0.7 : 0.6} lineCap="round"
             />
             {line.stations.map(station => (
-              <Marker 
-                key={station.id} 
-                position={[station.lat, station.lng]} 
+              <Marker
+                key={station.id}
+                position={[station.lat, station.lng]}
                 icon={station.isInterchange ? interchangeIcon(isDark) : stationIcon(line.color, isDark)}
               >
                 {!isNavigating && (
@@ -501,7 +499,7 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
                           <p className="text-sm font-black text-emerald-600">4 Mins</p>
                         </div>
                       </div>
-                      <button 
+                      <button
                         onClick={() => onViewSchedule?.(station)}
                         className="w-full py-2.5 bg-[#FF4B3A] text-white text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center justify-between px-4 transition-all"
                       >
@@ -516,10 +514,10 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
         ))}
 
         {userLocation && <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon} />}
-        
+
         {/* Real Road-Based Navigation Path */}
         {routeCoords.length > 0 && (
-          <Polyline 
+          <Polyline
             positions={routeCoords}
             color={isNavigating ? "#2563eb" : "#FF4B3A"}
             weight={6}
@@ -534,7 +532,7 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
           <Marker key={train.id} position={[train.lat, train.lng]} icon={trainIcon(LINE_COLORS[train.line] || '#000', isDark)}>
             {!isNavigating && (
               <Popup className="custom-popup">
-                 <div className={`p-1 text-center font-black text-xs ${isDark ? 'text-white' : 'text-slate-900'}`}>Toward {train.nextStation}</div>
+                <div className={`p-1 text-center font-black text-xs ${isDark ? 'text-white' : 'text-slate-900'}`}>Toward {train.nextStation}</div>
               </Popup>
             )}
           </Marker>

@@ -64,8 +64,8 @@ const App: React.FC = () => {
       {/* Top Header */}
       {activeView !== 'map' && (
         <header className={`px-6 py-4 flex items-center justify-between ${theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-100'} backdrop-blur-md sticky top-0 z-30 border-b`}>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#FF4B3A] rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
+          <div className="flex items-center gap-1">
+            <div className="w-12 h-12  ">
               <img src="/favicon_io/apple-touch-icon.png" alt="MetroTrack Logo" className="w-full h-full object-cover" />
             </div>
             <h1 className={`font-extrabold text-xl tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>Metro<span className="text-[#FF4B3A]">Track</span></h1>
