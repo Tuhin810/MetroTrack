@@ -97,27 +97,27 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ theme = 'light' }) => {
             <div className={`absolute inset-0 pointer-events-none bg-gradient-to-t ${isDark ? 'from-slate-900' : 'from-white'} via-transparent to-transparent opacity-60`} />
           </div>
 
-          <div className="px-8 -mt-10 relative z-10">
-            <div className={`rounded-t-[40px] pt-12 pb-6 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
-              <div className="flex justify-between items-start mb-8">
-                <div className="max-w-[70%]">
-                  <h2 className={`text-3xl font-black leading-tight tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>{routeResult.sTo.name}</h2>
-                  <p className="text-sm font-bold text-slate-400 mt-2 uppercase tracking-wider">From <span className={isDark ? 'text-slate-200' : 'text-slate-900'}>{routeResult.sFrom.name}</span></p>
+          <div className="px-1 -mt-10 relative z-10">
+            <div className={`rounded-t-[40px] pt-8 pb-6 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+              <div className="flex justify-between px-5 items-start gap-4 mb-6">
+                <div className="flex-1 min-w-0">
+                  <h2 className={`text-2xl font-black leading-tight tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>{routeResult.sTo.name}</h2>
+                  <p className="text-xs font-bold text-slate-400 mt-1.5 uppercase tracking-wide">From <span className={isDark ? 'text-slate-200' : 'text-slate-700'}>{routeResult.sFrom.name}</span></p>
                 </div>
-                <div className="text-right">
-                  <p className={`text-5xl font-black leading-none ${isDark ? 'text-white' : 'text-slate-900'}`}>{routeResult.totalTime}</p>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">MINS</p>
+                <div className="text-right flex-shrink-0">
+                  <p className={`text-4xl font-black leading-none ${isDark ? 'text-white' : 'text-slate-900'}`}>{routeResult.totalTime}</p>
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">MINS</p>
                 </div>
               </div>
 
-              <div className="flex gap-3 mb-12">
+              <div className="flex gap-2.5 mb-10">
                 {[
                   { label: 'FARE', val: `₹${routeResult.totalFare}` },
                   { label: 'STOPS', val: routeResult.totalStations },
                   { label: 'SWITCHES', val: routeResult.legs.length - 1 }
                 ].map((item, i) => (
-                  <div key={i} className={`flex-1 px-2 py-4 rounded-3xl flex flex-col items-center justify-center border backdrop-blur ${isDark ? 'bg-slate-800/50 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">{item.label}</p>
+                  <div key={i} className={`flex-1 px-3 py-3.5 rounded-2xl flex flex-col items-center justify-center border backdrop-blur ${isDark ? 'bg-slate-800/50 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
+                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.15em] mb-1">{item.label}</p>
                     <p className={`text-base font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>{item.val}</p>
                   </div>
                 ))}
