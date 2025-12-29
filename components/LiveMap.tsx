@@ -373,9 +373,10 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
         </div>
       )}
 
+
       {/* Control Buttons (Floating Right) */}
       {!isNavigating && (
-        <div className="absolute bottom-10 right-6 z-[1001] flex flex-col gap-3">
+        <div className="absolute bottom-32 right-6 z-[1001] flex flex-col gap-3">
           {isFilterOpen && (
             <div className={`backdrop-blur-xl rounded-[28px] shadow-2xl border p-3 mb-1 animate-in slide-in-from-bottom-4 duration-300 flex flex-col gap-1 w-48 ${isDark ? 'bg-slate-900/95 border-slate-700 shadow-black' : 'bg-white/95 border-white/40 shadow-slate-300'}`}>
               <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest px-3 py-2">Visible Lines</p>
@@ -415,7 +416,7 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
 
       {/* Navigation Detail Card (Bottom) */}
       {(nearestResult || isNavigating) && (
-        <div className="absolute bottom-10 left-6 right-6 z-[1001] max-w-md mx-auto">
+        <div className="absolute bottom-28 left-6 right-6 z-[1001] max-w-md mx-auto">
           <div className={`backdrop-blur-2xl rounded-[40px] p-8 shadow-2xl border shadow-slate-900/10 animate-in slide-in-from-bottom-12 duration-500 ${isDark ? 'bg-slate-900/95 border-slate-800 text-white' : 'bg-white/95 border-white/40 text-slate-900'}`}>
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
