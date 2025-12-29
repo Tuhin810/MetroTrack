@@ -124,43 +124,67 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ theme = 'light' }) => {
               </div>
 
               <div>
-                <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-8 px-1">STATIONS</h3>
-                <div className="space-y-0 relative pl-4">
-                  <div className={`absolute left-[15px] top-3 bottom-3 w-px ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`} />
+                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-5 px-5">Stations</h3>
+                <div className="px-5 relative">
+                  {/* Continuous vertical line */}
+                  <div className={`absolute left-[30px] top-2 bottom-12 w-[3px] ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+
                   {routeResult.legs.map((leg, legIdx) => (
                     <React.Fragment key={legIdx}>
-                      <div className="flex items-start gap-8 mb-10 relative z-10">
-                        <div className={`w-4 h-4 rounded-full border-[3.5px] bg-white mt-1.5 shadow-sm`} style={{ borderColor: legIdx === 0 ? '#3b82f6' : '#94a3b8' }} />
-                        <div>
-                          <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-0.5">{legIdx === 0 ? 'STARTING POINT' : 'TRANSFER STATION'}</p>
-                          <p className={`text-lg font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>{leg.stations[0].name}</p>
+                      {/* Starting/Transfer Station */}
+                      <div className="flex items-start gap-3 mb-3 relative">
+                        <div className="relative" style={{ width: '20px' }}>
+                          <div className={`w-5 h-5 rounded-full border-[3px] bg-white shadow-sm flex-shrink-0 z-10 relative`} style={{ borderColor: legIdx === 0 ? '#3b82f6' : '#94a3b8' }} />
+                        </div>
+                        <div className="flex-1 min-w-0 pt-0.5">
+                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.12em] mb-0.5">{legIdx === 0 ? 'Starting Point' : 'Transfer Station'}</p>
+                          <p className={`text-base font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>{leg.stations[0].name}</p>
                         </div>
                       </div>
-                      <div className="mb-10 ml-12">
-                        <div className={`border shadow-xl rounded-[32px] p-6 relative overflow-hidden ${isDark ? 'bg-slate-800/50 border-slate-700 shadow-black/20' : 'bg-white border-slate-50 shadow-slate-100/60'}`}>
-                          <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ backgroundColor: leg.color }} />
-                          <div className="flex justify-between items-center mb-6 pl-2">
-                            <span className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest text-white shadow-sm" style={{ backgroundColor: leg.color }}>{leg.line} Line</span>
-                            <span className="text-[11px] font-black text-slate-400 tracking-tight">{(leg.stations.length - 1) * 2.5} mins</span>
-                          </div>
-                          <div className="pl-2 space-y-4">
-                            <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-slate-500 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}><Train size={16} /></div>
-                              <div>
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Board Toward</p>
-                                <p className={`text-sm font-black ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>{leg.direction}</p>
-                              </div>
+
+                      {/* Route Card with colored line segment */}
+                      <div className="flex items-start gap-3 mb-3 relative">
+                        <div className="relative" style={{ width: '20px' }}>
+                          {/* Colored line segment for this route */}
+                          {/* <div className={`absolute left-[7px] top-0 w-[3px] z-[5]`} style={{ backgroundColor: leg.color, height: 'calc(100% + 12px)' }} /> */}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className={`border rounded-[18px] p-3.5 relative overflow-hidden ${isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50/80 border-slate-200'}`}>
+                            <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: leg.color }} />
+                            <div className="flex justify-between items-center mb-3 pl-1.5">
+                              <span className="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-wide text-white" style={{ backgroundColor: leg.color }}>{leg.line} Line</span>
+                              <span className="text-[10px] font-bold text-slate-400">{(leg.stations.length - 1) * 2.5} mins</span>
                             </div>
-                            <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-slate-500 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}><ArrowDown size={16} /></div>
-                              <div>
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Get Off At</p>
-                                <p className={`text-sm font-black ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>{leg.stations[leg.stations.length - 1].name}</p>
+                            <div className="pl-1.5 space-y-2.5">
+                              <div className="flex items-center gap-2.5">
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-slate-400 ${isDark ? 'bg-slate-900/50' : 'bg-white'}`}><Train size={14} /></div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-wide">Board Toward</p>
+                                  <p className={`text-sm font-bold ${isDark ? 'text-slate-200' : 'text-slate-900'} truncate`}>{leg.direction}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2.5">
+                                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-slate-400 ${isDark ? 'bg-slate-900/50' : 'bg-white'}`}><ArrowDown size={14} /></div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-wide">Get Off At</p>
+                                  <p className={`text-sm font-bold ${isDark ? 'text-slate-200' : 'text-slate-900'} truncate`}>{leg.stations[leg.stations.length - 1].name}</p>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
+
+                      {/* Destination Station (only for last leg) */}
+                      {legIdx === routeResult.legs.length - 1 && (
+                        <div className="flex items-start gap-3 relative">
+                          <div className={`w-5 h-5 rounded-full border-[3px] bg-white shadow-sm flex-shrink-0 relative z-10`} style={{ borderColor: '#10b981' }} />
+                          <div className="flex-1 min-w-0 pt-0.5">
+                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.12em] mb-0.5">Destination</p>
+                            <p className={`text-base font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>{leg.stations[leg.stations.length - 1].name}</p>
+                          </div>
+                        </div>
+                      )}
                     </React.Fragment>
                   ))}
                 </div>
@@ -241,7 +265,7 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ theme = 'light' }) => {
         <button
           onClick={() => routeResult && setShowItinerary(true)}
           disabled={!routeResult}
-          className={`w-full mt-4 py-3.5 rounded-[28px] font-bold text-base transition-all shadow-lg ${routeResult ? 'bg-[#3b82f6] text-white shadow-blue-500/20 active:scale-[0.98]' : (isDark ? 'bg-slate-800 text-slate-600' : 'bg-slate-100 text-slate-300')}`}
+          className={`w-full mt-4 py-3.5 rounded-[28px] font-bold text-base transition-all shadow-lg ${routeResult ? 'bg-[#FF4B3A] text-white shadow-blue-500/20 active:scale-[0.98]' : (isDark ? 'bg-slate-800 text-slate-600' : 'bg-slate-100 text-slate-300')}`}
         >
           Find Route
         </button>
