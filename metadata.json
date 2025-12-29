@@ -1,0 +1,7 @@
+{
+  "name": "MetroTrack Kolkata",
+  "description": "A production-ready real-time metro tracking and route planning application for Kolkata Metro commuters, featuring live train estimation, interactive maps, and fare calculation.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
