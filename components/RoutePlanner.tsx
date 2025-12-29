@@ -98,7 +98,7 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ theme = 'light' }) => {
           </div>
 
           <div className="px-1 -mt-10 relative z-10">
-            <div className={`rounded-t-[40px] pt-8 pb-6 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+            <div className={`rounded-t-[40px] pt-8 pb-6 shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.15)] ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
               <div className="flex justify-between px-5 items-start gap-4 mb-6">
                 <div className="flex-1 min-w-0">
                   <h2 className={`text-2xl font-black leading-tight tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>{routeResult.sTo.name}</h2>
