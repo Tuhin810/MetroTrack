@@ -44,7 +44,7 @@ const App: React.FC = () => {
           </div>
           <h2 className="text-2xl font-extrabold">Digital Tickets</h2>
           <p className={`${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'} max-w-xs`}>Buy and manage your Kolkata Metro QR tickets directly from your mobile.</p>
-          <a 
+          <a
             href="https://mtp.indianrailways.gov.in/index.jsp?lang=0&id=0,5"
             target="_blank"
             rel="noopener noreferrer"
@@ -63,8 +63,8 @@ const App: React.FC = () => {
       {activeView !== 'map' && (
         <header className={`px-6 py-4 flex items-center justify-between ${theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-100'} backdrop-blur-md sticky top-0 z-30 border-b`}>
           <div className="flex items-center gap-2">
-             <div className="w-8 h-8 bg-[#FF4B3A] rounded-xl flex items-center justify-center text-white font-black text-xs">M</div>
-             <h1 className={`font-extrabold text-xl tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>Metro<span className="text-[#FF4B3A]">Track</span></h1>
+            <div className="w-8 h-8 bg-[#FF4B3A] rounded-xl flex items-center justify-center text-white font-black text-xs">M</div>
+            <h1 className={`font-extrabold text-xl tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>Metro<span className="text-[#FF4B3A]">Track</span></h1>
           </div>
           <div className="flex gap-2">
             <button onClick={toggleTheme} className={`p-2.5 rounded-full ${theme === 'dark' ? 'bg-slate-800 text-yellow-400' : 'bg-slate-50 text-slate-600'} active:scale-90 transition-all`}>
@@ -84,35 +84,35 @@ const App: React.FC = () => {
 
       {/* Bottom Navigation */}
       <nav className={`h-20 ${theme === 'dark' ? 'bg-slate-900/95 border-slate-800' : 'bg-white/95 border-slate-100'} backdrop-blur-xl border-t flex items-center justify-around px-4 sticky bottom-0 z-40 pb-safe`}>
-        <NavItem 
-          active={activeView === 'map'} 
-          icon={<Map size={24} />} 
-          label="Map" 
-          onClick={() => { setActiveView('map'); setInitialStation(null); }} 
+        <NavItem
+          active={activeView === 'map'}
+          icon={<Map size={24} />}
+          label="Map"
+          onClick={() => { setActiveView('map'); setInitialStation(null); }}
         />
-        <NavItem 
-          active={activeView === 'search'} 
-          icon={<Search size={24} />} 
-          label="Search" 
-          onClick={() => setActiveView('search')} 
+        <NavItem
+          active={activeView === 'search'}
+          icon={<Search size={24} />}
+          label="Search"
+          onClick={() => setActiveView('search')}
         />
-        <NavItem 
-          active={activeView === 'timings'} 
-          icon={<Clock size={24} />} 
-          label="Timings" 
-          onClick={() => setActiveView('timings')} 
+        <NavItem
+          active={activeView === 'timings'}
+          icon={<Clock size={24} />}
+          label="Timings"
+          onClick={() => setActiveView('timings')}
         />
-        <NavItem 
-          active={activeView === 'tickets'} 
-          icon={<Ticket size={24} />} 
-          label="Tickets" 
-          onClick={() => setActiveView('tickets')} 
+        <NavItem
+          active={activeView === 'tickets'}
+          icon={<Ticket size={24} />}
+          label="Tickets"
+          onClick={() => setActiveView('tickets')}
         />
       </nav>
       {/* Map-specific theme toggle when in map view */}
       {activeView === 'map' && (
-        <button 
-          onClick={toggleTheme} 
+        <button
+          onClick={toggleTheme}
           className={`absolute top-24 right-6 z-[1001] w-14 h-14 rounded-full shadow-2xl flex items-center justify-center border-2 transition-all active:scale-90 ${theme === 'dark' ? 'bg-slate-800 border-slate-700 text-yellow-400' : 'bg-white border-white text-slate-600'}`}
         >
           {theme === 'light' ? <Moon size={22} strokeWidth={2.5} /> : <Sun size={22} strokeWidth={2.5} />}
@@ -130,7 +130,7 @@ interface NavItemProps {
 }
 
 const NavItem: React.FC<NavItemProps> = ({ active, icon, label, onClick }) => (
-  <button 
+  <button
     onClick={onClick}
     className={`flex flex-col items-center justify-center w-20 transition-all duration-200 ${active ? 'text-[#FF4B3A]' : 'text-slate-400'}`}
   >
@@ -138,7 +138,7 @@ const NavItem: React.FC<NavItemProps> = ({ active, icon, label, onClick }) => (
       {icon}
     </div>
     <span className={`text-[10px] font-bold uppercase tracking-widest ${active ? 'opacity-100' : 'opacity-60'}`}>{label}</span>
-    {active && <div className="w-1.5 h-1.5 bg-[#FF4B3A] rounded-full mt-1.5" />}
+    {/* {active && <div className="w-1.5 h-1.5 bg-[#FF4B3A] rounded-full mt-1.5" />} */}
   </button>
 );
 

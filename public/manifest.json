@@ -1,0 +1,56 @@
+{
+  "name": "MetroTrack Kolkata - Metro Route Planner",
+  "short_name": "MetroTrack",
+  "description": "Plan your Kolkata Metro journey with real-time schedules, route planning, and interactive maps",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#FF4B3A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon_io/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon_io/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon_io/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["travel", "navigation", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Route Planner",
+      "short_name": "Routes",
+      "description": "Plan your metro route",
+      "url": "/?view=search",
+      "icons": [
+        {
+          "src": "/favicon_io/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Train Timings",
+      "short_name": "Timings",
+      "description": "View train schedules",
+      "url": "/?view=timings",
+      "icons": [
+        {
+          "src": "/favicon_io/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
