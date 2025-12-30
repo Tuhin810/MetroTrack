@@ -38,13 +38,39 @@ const stationIcon = (color: string, isDark: boolean) => L.divIcon({
   iconAnchor: [7, 7]
 });
 
-const userIcon = L.divIcon({
-  html: `<div class="w-8 h-8 rounded-full border-[3px] border-white bg-blue-600 shadow-2xl flex items-center justify-center pulse">
-          <div class="w-3 h-3 rounded-full bg-white shadow-inner"></div>
-         </div>`,
+const createUserIcon = (heading: number | null, isDark: boolean) => L.divIcon({
+  html: `
+    <div class="relative w-12 h-12 flex items-center justify-center">
+      <!-- Direction Beam / Flashlight -->
+      ${heading !== null ? `
+        <div class="absolute w-32 h-32 pointer-events-none" style="transform: rotate(${heading}deg); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0.8">
+          <div style="
+            width: 0;
+            height: 0;
+            border-left: 24px solid transparent;
+            border-right: 24px solid transparent;
+            border-bottom: 60px solid rgba(59, 130, 246, 0.3);
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            filter: blur(8px);
+          "></div>
+        </div>
+      ` : ''}
+      
+      <!-- Ripple Effect -->
+      <div class="absolute w-8 h-8 bg-blue-500/20 rounded-full animate-ping"></div>
+      
+      <!-- User Dot -->
+      <div class="w-6 h-6 rounded-full border-[3px] ${isDark ? 'border-slate-800' : 'border-white'} bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)] z-10 flex items-center justify-center">
+        <div class="w-1.5 h-1.5 rounded-full bg-white shadow-inner"></div>
+      </div>
+    </div>
+  `,
   className: '',
-  iconSize: [32, 32],
-  iconAnchor: [16, 16]
+  iconSize: [48, 48],
+  iconAnchor: [24, 24]
 });
 
 const interchangeIcon = (isDark: boolean) => L.divIcon({
@@ -173,6 +199,7 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [userLocation, setUserLocation] = useState<{ lat: number, lng: number } | null>(null);
+  const [heading, setHeading] = useState<number | null>(null);
 
   const [isFindingNearest, setIsFindingNearest] = useState(false);
   const [nearestResult, setNearestResult] = useState<{ station: Station, distance: number } | null>(null);
@@ -192,7 +219,25 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
     const update = () => setTrains(getLiveTrains());
     update();
     const interval = setInterval(update, 5000);
-    return () => clearInterval(interval);
+
+    // Orientation logic for the directional beam
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      // webkitCompassHeading is the gold standard for iOS, alpha for Android (if absolute)
+      const h = (e as any).webkitCompassHeading || (e.absolute ? e.alpha : null);
+      if (h !== null && h !== undefined) {
+        // We flip it for map coordinate space if using alpha
+        setHeading(e.absolute ? 360 - h : h);
+      }
+    };
+
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', handleOrientation, true);
+    }
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('deviceorientation', handleOrientation, true);
+    };
   }, []);
 
   const filteredStations = useMemo(() => {
@@ -225,9 +270,10 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
     if ("geolocation" in navigator) {
       watchIdRef.current = navigator.geolocation.watchPosition(
         async (position) => {
-          const { latitude: lat, longitude: lng } = position.coords;
+          const { latitude: lat, longitude: lng, heading: geoHeading } = position.coords;
           const newLoc = { lat, lng };
           setUserLocation(newLoc);
+          if (geoHeading !== null) setHeading(geoHeading);
           const dist = getDistance(newLoc, nearestResult.station);
           setNavDistance(dist);
           if (routeCoords.length === 0) {
@@ -260,9 +306,10 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
 
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const { latitude: lat, longitude: lng } = position.coords;
+          const { latitude: lat, longitude: lng, heading: geoHeading } = position.coords;
           const loc = { lat, lng };
           setUserLocation(loc);
+          if (geoHeading !== null) setHeading(geoHeading);
           const nearest = findNearestStation(lat, lng);
           setNearestResult(nearest);
           setNavDistance(nearest.distance);
@@ -520,7 +567,7 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
           </React.Fragment>
         ))}
 
-        {userLocation && <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon} />}
+        {userLocation && <Marker position={[userLocation.lat, userLocation.lng]} icon={createUserIcon(heading, isDark)} />}
 
         {/* Real Road-Based Navigation Path */}
         {routeCoords.length > 0 && (
