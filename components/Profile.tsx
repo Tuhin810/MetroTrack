@@ -4,9 +4,10 @@ import { User, Settings, Bell, CreditCard, Heart, MapPin, Clock, ChevronRight, L
 interface ProfileProps {
     theme?: 'light' | 'dark';
     onThemeToggle?: () => void;
+    onLogout?: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ theme = 'light', onThemeToggle }) => {
+const Profile: React.FC<ProfileProps> = ({ theme = 'light', onThemeToggle, onLogout }) => {
     const isDark = theme === 'dark';
     const [userName] = useState('Metro Traveler');
     const [userEmail] = useState('traveler@metrotrack.com');
@@ -105,7 +106,10 @@ const Profile: React.FC<ProfileProps> = ({ theme = 'light', onThemeToggle }) => 
                 ))}
 
                 {/* Logout Button */}
-                <button className={`w-full rounded-2xl p-4 flex items-center justify-center gap-3 border transition-all ${isDark ? 'bg-slate-900 border-slate-800 text-red-400 hover:bg-red-500/10' : 'bg-white border-slate-100 text-red-600 hover:bg-red-50'}`}>
+                <button
+                    onClick={onLogout}
+                    className={`w-full rounded-2xl p-4 flex items-center justify-center gap-3 border transition-all ${isDark ? 'bg-slate-900 border-slate-800 text-red-400 hover:bg-red-500/10' : 'bg-white border-slate-100 text-red-600 hover:bg-red-50'}`}
+                >
                     <LogOut size={20} />
                     <span className="font-bold text-sm">Log Out</span>
                 </button>
