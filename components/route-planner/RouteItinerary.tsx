@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { ArrowLeft, Train, ArrowDown } from 'lucide-react';
+import { ArrowLeft, Train, ArrowDown, ChevronDown, ChevronUp, List } from 'lucide-react';
 import { Station } from '../../types';
 
 // Types
@@ -99,61 +99,100 @@ const StationPoint: React.FC<{
 };
 
 // Leg card component
-const LegCard: React.FC<{ leg: RouteLeg; isDark: boolean }> = ({ leg, isDark }) => (
-    <div className="flex items-start gap-4 mb-4 relative">
-        <div className="relative flex flex-col items-center" style={{ width: '24px' }}>
-            <div className="w-[3px] h-full absolute top-0 bottom-0 opacity-20" style={{ backgroundColor: leg.color }} />
-        </div>
-        <div className="flex-1 min-w-0">
-            <div className={`border rounded-[14px] py-3 px-4 relative overflow-hidden transition-all duration-300 ${isDark
-                ? 'bg-slate-800/30 border-slate-700/50 hover:bg-slate-800/40'
-                : 'bg-slate-50 border-slate-100 hover:border-slate-200 hover:shadow-lg hover:shadow-slate-200/30'
-                }`}>
-                <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ backgroundColor: leg.color }} />
-                <div className="flex justify-between items-center mb-4 pl-1">
-                    <div className="flex items-center gap-2">
-                        <div
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-sm"
-                            style={{ backgroundColor: leg.color }}
-                        >
-                            <Train size={14} />
+const LegCard: React.FC<{ leg: RouteLeg; isDark: boolean }> = ({ leg, isDark }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const intermediateStations = leg.stations.slice(1, -1);
+    const hasIntermediate = intermediateStations.length > 0;
+
+    return (
+        <div className="flex items-start gap-4 mb-4 relative">
+            <div className="relative flex flex-col items-center" style={{ width: '24px' }}>
+                <div className="w-[3px] h-full absolute top-0 bottom-0 opacity-20" style={{ backgroundColor: leg.color }} />
+            </div>
+            <div className="flex-1 min-w-0">
+                <div
+                    onClick={() => hasIntermediate && setIsExpanded(!isExpanded)}
+                    className={`border rounded-[14px] py-3 px-4 relative overflow-hidden transition-all duration-300 cursor-pointer ${isDark
+                        ? 'bg-slate-800/30 border-slate-700/50 hover:bg-slate-800/40'
+                        : 'bg-slate-50 border-slate-100 hover:border-slate-200 hover:shadow-lg hover:shadow-slate-200/30'
+                        } ${isExpanded ? (isDark ? 'bg-slate-800/60' : 'bg-slate-200/50 shadow-inner') : ''}`}
+                >
+                    <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ backgroundColor: leg.color }} />
+                    <div className="flex justify-between items-center mb-4 pl-1">
+                        <div className="flex items-center gap-2">
+                            <div
+                                className="w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-sm"
+                                style={{ backgroundColor: leg.color }}
+                            >
+                                <Train size={14} />
+                            </div>
+                            <span className="text-[11px] font-black uppercase tracking-tight" style={{ color: leg.color }}>
+                                {leg.line} Line
+                            </span>
                         </div>
-                        <span className="text-[11px] font-black uppercase  " style={{ color: leg.color }}>
-                            {leg.line} Line
-                        </span>
+                        <div className="flex items-center gap-2">
+                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isDark ? 'bg-slate-700/50 text-slate-400' : 'bg-white text-slate-500 shadow-sm border border-slate-100'}`}>
+                                {(leg.stations.length - 1) * 2.5} mins
+                            </span>
+                            {hasIntermediate && (
+                                <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''} ${isDark ? 'bg-slate-800' : 'bg-white shadow-sm'}`}>
+                                    <ChevronDown size={12} className={isDark ? 'text-slate-400' : 'text-slate-500'} />
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <span className="text-[11px] font-bold text-slate-400 px-2 py-1 rounded-lg">
-                        {(leg.stations.length - 1) * 2.5} mins
-                    </span>
-                </div>
-                <div className="pl-1 space-y-2">
-                    <div className="flex items-center gap-3.5">
-                        <div className={`w-9 h-9 rounded-2xl flex items-center justify-center text-slate-400 transition-colors ${isDark ? 'bg-slate-900/50' : 'bg-white shadow-sm'}`}>
-                            <Train size={16} />
+                    <div className="pl-1 space-y-2">
+                        <div className="flex items-center gap-3.5">
+                            <div className={`w-9 h-9 rounded-2xl flex items-center justify-center text-slate-400 transition-colors ${isDark ? 'bg-slate-900/50' : 'bg-white shadow-sm'}`}>
+                                <Train size={16} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Board Toward</p>
+                                <p className={`text-sm font-bold ${isDark ? 'text-slate-200' : 'text-slate-900'} truncate`}>
+                                    {leg.direction}
+                                </p>
+                            </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Board Toward</p>
-                            <p className={`text-sm font-bold ${isDark ? 'text-slate-200' : 'text-slate-900'} truncate`}>
-                                {leg.direction}
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3.5">
-                        <div className={`w-9 h-9 rounded-2xl flex items-center justify-center text-slate-400 transition-colors ${isDark ? 'bg-slate-900/50' : 'bg-white shadow-sm'}`}>
-                            <ArrowDown size={16} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-wide mb-0.5">Get Off At</p>
-                            <p className={`text-sm font-bold ${isDark ? 'text-slate-200' : 'text-slate-900'} truncate`}>
-                                {leg.stations[leg.stations.length - 1].name}
-                            </p>
+
+                        {/* Intermediate Stations List */}
+                        {isExpanded && hasIntermediate && (
+                            <div className="py-2 space-y-4 relative animate-in fade-in slide-in-from-top-2 duration-300">
+                                <div className="absolute left-[17.5px] top-0 bottom-0 w-[1.5px] bg-slate-200 dark:bg-slate-700/50" />
+                                {intermediateStations.map((station, idx) => (
+                                    <div key={idx} className="flex items-center gap-3.5 relative z-10">
+                                        <div className="w-9 flex justify-center">
+                                            <div className="w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 shadow-sm" />
+                                        </div>
+                                        <p className={`text-[13px] font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                                            {station.name}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="flex items-center gap-3.5">
+                            <div className={`w-9 h-9 rounded-2xl flex items-center justify-center text-slate-400 transition-colors ${isDark ? 'bg-slate-900/50' : 'bg-white shadow-sm'}`}>
+                                {leg.direction === leg.stations[leg.stations.length - 1].name ? <List size={16} /> : <ArrowDown size={16} />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-wide mb-0.5">
+                                    {leg.direction === leg.stations[leg.stations.length - 1].name ? "Total Stops" : "Get Off At"}
+                                </p>
+                                <p className={`text-sm font-bold ${isDark ? 'text-slate-200' : 'text-slate-900'} truncate`}>
+                                    {leg.direction === leg.stations[leg.stations.length - 1].name
+                                        ? `${leg.stations.length - 1} stops journey`
+                                        : leg.stations[leg.stations.length - 1].name
+                                    }
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 // Main Itinerary Component
 const RouteItinerary: React.FC<RouteItineraryProps> = ({ routeResult, onBack, theme }) => {
