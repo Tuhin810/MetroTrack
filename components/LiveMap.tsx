@@ -20,6 +20,7 @@ import {
   CircleStop,
   Footprints,
   Car,
+  ExternalLink,
   Cloud,
   Sun,
   CloudRain,
@@ -330,6 +331,12 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
     return Math.ceil(minutes);
   };
 
+  const openInGoogleMaps = () => {
+    if (!selectedStation) return;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedStation.lat},${selectedStation.lng}&travelmode=${navMode === 'walking' ? 'walking' : 'driving'}`;
+    window.open(url, '_blank');
+  };
+
   const toggleLineVisibility = (lineId: string) => {
     setVisibleLines(prev =>
       prev.includes(lineId) ? prev.filter(id => id !== lineId) : [...prev, lineId]
@@ -500,16 +507,29 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
                 </button>
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className={`w-full h-2 rounded-full overflow-hidden ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
-                  <div
-                    className="h-full bg-blue-600 transition-all duration-1000"
-                    style={{ width: `${Math.min(100, Math.max(5, 100 - (navDistance * 50)))}%` }}
-                  />
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className={`flex-1 h-2 rounded-full overflow-hidden mt-4 ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                    <div
+                      className="h-full bg-blue-600 transition-all duration-1000"
+                      style={{ width: `${Math.min(100, Math.max(5, 100 - (navDistance * 50)))}%` }}
+                    />
+                  </div>
                 </div>
-                <div className={`flex justify-between items-center text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-slate-600' : 'text-slate-300'}`}>
-                  <span>FOLLOW THE ROAD</span>
-                  <span>{navDistance < 0.1 ? 'ARRIVING' : `${(navDistance * 1000).toFixed(0)}m`}</span>
+
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <div className={`flex justify-between items-center text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-slate-600' : 'text-slate-300'}`}>
+                      <span>FOLLOW THE ROAD</span>
+                      <span>{navDistance < 0.1 ? 'ARRIVING' : `${(navDistance * 1000).toFixed(0)}m`}</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={openInGoogleMaps}
+                    className={`px-4 py-2 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all ${isDark ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                  >
+                    Google Maps <ExternalLink size={12} />
+                  </button>
                 </div>
               </div>
             )}
