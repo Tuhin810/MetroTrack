@@ -63,6 +63,22 @@ export const getLiveTrains = (): LiveTrain[] => {
   return trains;
 };
 
+export const getNextTrainArrival = (line: string, direction: string): number => {
+  const now = new Date();
+  const minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
+  
+  if (minutesSinceMidnight < 410 || minutesSinceMidnight > 1305) return -1;
+
+  const isPeak = (now.getHours() >= 9 && now.getHours() <= 11) || (now.getHours() >= 17 && now.getHours() <= 19);
+  const frequency = isPeak ? 6 : 10;
+  
+  // Deterministic but staggered arrival based on station/line
+  const stagger = (line.length + direction.length) % frequency;
+  const minsRemaining = (frequency - ((minutesSinceMidnight + stagger) % frequency)) % frequency;
+  
+  return minsRemaining === 0 ? frequency : minsRemaining;
+};
+
 export const calculateFare = (distInKm: number, line?: string) => {
   // Official Green Line Slabs (Refined to match Sector V -> Esplanade = 30)
   if (line === 'Green' || line === 'Orange' || line === 'Purple' || line === 'Yellow') {

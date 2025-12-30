@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { ArrowLeft, Train, ArrowDown, ChevronDown, ChevronUp, List, Wallet } from 'lucide-react';
+import { ArrowLeft, Train, ArrowDown, ChevronDown, ChevronUp, List, Wallet, Clock } from 'lucide-react';
 import { Station } from '../../types';
+import { getNextTrainArrival } from '../../utils/tracker';
 
 // Types
 interface RouteLeg {
@@ -66,8 +67,10 @@ const StatCard: React.FC<{ label: string; value: string | number; isDark: boolea
 const StationPoint: React.FC<{
     type: 'start' | 'transfer' | 'end';
     name: string;
-    isDark: boolean
-}> = ({ type, name, isDark }) => {
+    isDark: boolean;
+    platform?: number;
+    nextTrain?: number;
+}> = ({ type, name, isDark, platform, nextTrain }) => {
     const colors = {
         start: '#3b82f6',
         transfer: '#94a3b8',
@@ -91,9 +94,29 @@ const StationPoint: React.FC<{
                 <p className="text-[10px] font-black text-slate-400 uppercase  mb-0.5">
                     {labels[type]}
                 </p>
-                <p className={`text-lg font-black leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    {name}
-                </p>
+                <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                        <p className={`text-lg font-black leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            {name}
+                        </p>
+                        {nextTrain !== undefined && nextTrain > 0 && (
+                            <div className="flex items-center gap-1.5 mt-1">
+                                <Clock size={10} className="text-orange-500 animate-pulse" />
+                                <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest">
+                                    Next Train in {nextTrain} mins
+                                </span>
+                            </div>
+                        )}
+                        {nextTrain === -1 && (
+                            <p className="text-[10px] font-black text-slate-400 uppercase mt-1">Service Closed</p>
+                        )}
+                    </div>
+                    {platform && (
+                        <div className={`px-2 py-0.5 rounded-lg border text-[10px] font-black uppercase tracking-wider h-fit mt-0.5 ${isDark ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-500'}`}>
+                            Platform {platform}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -204,6 +227,16 @@ const LegCard: React.FC<{ leg: RouteLeg; isDark: boolean; showLegFare: boolean }
 const RouteItinerary: React.FC<RouteItineraryProps> = ({ routeResult, onBack, theme }) => {
     const isDark = theme === 'dark';
 
+    const getPlatform = (line: string, direction: string): number => {
+        if (line === 'Blue') {
+            return direction === 'Kavi Subhash' ? 2 : 1;
+        }
+        if (line === 'Green') {
+            return direction === 'Salt Lake Sector V' ? 1 : 2;
+        }
+        return 1;
+    };
+
     const allRouteStations = useMemo(() => {
         return routeResult.legs.flatMap(l => l.stations);
     }, [routeResult]);
@@ -312,6 +345,8 @@ const RouteItinerary: React.FC<RouteItineraryProps> = ({ routeResult, onBack, th
                                                 type={legIdx === 0 ? 'start' : 'transfer'}
                                                 name={leg.stations[0].name}
                                                 isDark={isDark}
+                                                platform={getPlatform(leg.line, leg.direction)}
+                                                nextTrain={getNextTrainArrival(leg.line, leg.direction)}
                                             />
                                         </div>
                                         <LegCard
