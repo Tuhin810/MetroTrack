@@ -20,6 +20,7 @@ const Timings: React.FC<TimingsProps> = ({ initialStation, onStationCleared, the
     const now = new Date();
     return now.getHours() * 60 + now.getMinutes();
   });
+  const [selectedPlatform, setSelectedPlatform] = useState<number | 'all'>('all');
 
   const isDark = theme === 'dark';
 
@@ -125,23 +126,39 @@ const Timings: React.FC<TimingsProps> = ({ initialStation, onStationCleared, the
     const upTimesRaw = generateFullDaySchedule(selectedStation, line, 'up');
     const downTimesRaw = generateFullDaySchedule(selectedStation, line, 'down');
 
+    const getPlatformNum = (lineStr: string, direction: string): number => {
+      if (lineStr === 'Blue') return direction === 'Kavi Subhash' ? 2 : 1;
+      if (lineStr === 'Green') return direction === 'Salt Lake Sector V' ? 1 : 2;
+      return 1;
+    };
+
     const allTrains = [
-      ...upTimesRaw.map(t => ({
-        time: t,
-        direction: 'up',
-        from: line.stations[0].name,
-        to: line.stations[line.stations.length - 1].name
-      })),
-      ...downTimesRaw.map(t => ({
-        time: t,
-        direction: 'down',
-        from: line.stations[line.stations.length - 1].name,
-        to: line.stations[0].name
-      }))
+      ...upTimesRaw.map(t => {
+        const to = line.stations[line.stations.length - 1].name;
+        return {
+          time: t,
+          direction: 'up',
+          from: line.stations[0].name,
+          to,
+          platform: getPlatformNum(line.name.split(' ')[0], to)
+        };
+      }),
+      ...downTimesRaw.map(t => {
+        const to = line.stations[0].name;
+        return {
+          time: t,
+          direction: 'down',
+          from: line.stations[line.stations.length - 1].name,
+          to,
+          platform: getPlatformNum(line.name.split(' ')[0], to)
+        };
+      })
     ].sort((a, b) => a.time - b.time);
 
-    // Filter to show next 10 trains after selected time
-    const nextTrains = allTrains.filter(t => t.time >= filterTime).slice(0, 10);
+    // Filter to show next 10 trains after selected time and selected platform
+    const nextTrains = allTrains.filter(t =>
+      t.time >= filterTime && (selectedPlatform === 'all' || t.platform === selectedPlatform)
+    ).slice(0, 10);
 
     const formatFilterTime = (mins: number) => {
       const h = Math.floor(mins / 60);
@@ -162,18 +179,38 @@ const Timings: React.FC<TimingsProps> = ({ initialStation, onStationCleared, the
             </div>
           </div>
 
-          {/* Time Filter */}
-          <div className={`rounded-2xl border p-3 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
-            <label className="text-[9px] font-black text-slate-400 uppercase tracking-wide mb-2 block">Filter From Time</label>
-            <input
-              type="time"
-              value={formatFilterTime(filterTime)}
-              onChange={(e) => {
-                const [h, m] = e.target.value.split(':').map(Number);
-                setFilterTime(h * 60 + m);
-              }}
-              className={`w-full text-base font-bold outline-none bg-transparent ${isDark ? 'text-white' : 'text-slate-900'}`}
-            />
+          {/* Time & Platform Filter */}
+          <div className="flex gap-3">
+            <div className={`flex-1 rounded-2xl border p-3 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+              <label className="text-[9px] font-black text-slate-400 uppercase tracking-wide mb-2 block">Filter From Time</label>
+              <input
+                type="time"
+                value={formatFilterTime(filterTime)}
+                onChange={(e) => {
+                  const [h, m] = e.target.value.split(':').map(Number);
+                  setFilterTime(h * 60 + m);
+                }}
+                className={`w-full text-base font-bold outline-none bg-transparent ${isDark ? 'text-white' : 'text-slate-900'}`}
+              />
+            </div>
+            <div className={`flex-1 rounded-2xl border p-1.5 flex gap-1 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+              {[
+                { id: 'all', label: 'All' },
+                { id: 1, label: 'P1' },
+                { id: 2, label: 'P2' }
+              ].map(p => (
+                <button
+                  key={p.id}
+                  onClick={() => setSelectedPlatform(p.id as any)}
+                  className={`flex-1 rounded-xl text-[10px] font-black transition-all ${selectedPlatform === p.id
+                      ? 'bg-[#FF4B3A] text-white shadow-lg shadow-orange-500/20'
+                      : `text-slate-400 ${isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`
+                    }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -193,6 +230,9 @@ const Timings: React.FC<TimingsProps> = ({ initialStation, onStationCleared, the
                   </div>
                 </div>
                 <div className="text-right">
+                  <div className={`px-2 py-0.5 mb-1 rounded-lg border text-[9px] font-black uppercase tracking-wider inline-block ${isDark ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'}`}>
+                    Platform {train.platform}
+                  </div>
                   <p className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {formatTime(train.time)}
                   </p>
