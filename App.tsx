@@ -86,9 +86,44 @@ const App: React.FC = () => {
         {renderView()}
       </main>
 
-      {/* Bottom Navigation - Modern Floating Style */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-4 w-full max-w-md">
-        <nav className={`rounded-[28px] p-2 flex items-center justify-around shadow-2xl ${theme === 'dark' ? 'bg-slate-900/90 shadow-black/40' : 'bg-white shadow-slate-400/20'} backdrop-blur-2xl`}>
+      {/* Bottom Navigation - Floating for Map, Docked for Others */}
+      {activeView === 'map' ? (
+        /* Floating Navigation for Map View */
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-4 w-full max-w-md">
+          <nav className={`rounded-[28px] p-2 flex items-center justify-around shadow-2xl ${theme === 'dark' ? 'bg-slate-900/90 shadow-black/40' : 'bg-white shadow-slate-400/20'} backdrop-blur-2xl`}>
+            <NavItem
+              active={activeView === 'map'}
+              icon={<Map size={22} />}
+              label="Map"
+              onClick={() => { setActiveView('map'); setInitialStation(null); }}
+              theme={theme}
+            />
+            <NavItem
+              active={activeView === 'search'}
+              icon={<Search size={22} />}
+              label="Routes"
+              onClick={() => setActiveView('search')}
+              theme={theme}
+            />
+            <NavItem
+              active={activeView === 'timings'}
+              icon={<Clock size={22} />}
+              label="Times"
+              onClick={() => setActiveView('timings')}
+              theme={theme}
+            />
+            <NavItem
+              active={activeView === 'tickets'}
+              icon={<Ticket size={22} />}
+              label="Tickets"
+              onClick={() => setActiveView('tickets')}
+              theme={theme}
+            />
+          </nav>
+        </div>
+      ) : (
+        /* Docked Navigation for Other Views */
+        <nav className={`sticky bottom-0 w-full z-40 flex items-center justify-around py-2 border-t ${theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
           <NavItem
             active={activeView === 'map'}
             icon={<Map size={22} />}
@@ -118,7 +153,7 @@ const App: React.FC = () => {
             theme={theme}
           />
         </nav>
-      </div>
+      )}
       {/* Map-specific theme toggle when in map view */}
       {activeView === 'map' && (
         <button

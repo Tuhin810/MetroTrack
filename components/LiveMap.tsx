@@ -302,7 +302,7 @@ const LiveMap: React.FC<LiveMapProps> = ({ onViewSchedule, theme = 'light' }) =>
       <div className={`absolute top-0 left-0 right-0 h-32 z-[500] pointer-events-none ${true ? 'bg-gradient-to-b from-black/40 to-transparent' : 'bg-gradient-to-b from-slate-100/20 to-transparent'}`} />
 
       {/* Bottom gradient overlay */}
-      <div className={`absolute bottom-0 left-0 right-0 h-40 z-[500] pointer-events-none ${true ? 'bg-gradient-to-t from-black/40 to-transparent' : 'bg-gradient-to-t from-slate-100/20 to-transparent'}`} />
+      <div className={`absolute bottom-0 left-0 right-0 h-40 z-[500] pointer-events-none ${true ? 'bg-gradient-to-t from-black/50 to-transparent' : 'bg-gradient-to-t from-slate-100/20 to-transparent'}`} />
 
       <WeatherWidget isDark={isDark} />
 
