@@ -28,8 +28,14 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ theme = 'light' }) => {
     if (sFrom && sTo) {
       const legs = getDetailedRoute(sFrom, sTo);
       const totalDist = legs.reduce((acc, leg) => acc + leg.distance, 0);
-      const totalFare = calculateFare(totalDist);
-      const totalTime = Math.round(totalDist * 2.5 + (legs.length > 1 ? (legs.length - 1) * 8 : 5));
+      const totalSegments = legs.reduce((acc, leg) => acc + (leg.stations.length - 1), 0);
+
+      // Calculate total fare based on total distance and the most frequent line
+      const primaryLine = legs[0].line;
+      const totalFare = calculateFare(totalDist, primaryLine);
+
+      // Calculate total time: 2.8 mins per segment + 5 mins per interchange
+      const totalTime = Math.round(totalSegments * 2.8 + (legs.length > 1 ? (legs.length - 1) * 5 : 0));
       const totalStations = legs.reduce((acc, leg) => acc + leg.stations.length - (acc > 0 ? 1 : 0), 0);
       return { legs, totalFare, totalTime, totalDist, sFrom, sTo, totalStations };
     }

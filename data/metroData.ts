@@ -1,6 +1,11 @@
 
 import { MetroLine, Station } from '../types';
 
+/**
+ * Kolkata Metro Official Data (Updated 2024/2025)
+ * Sources: Metro Railway Kolkata Official Site, KMRCL, OpenStreetMap
+ */
+
 export const BLUE_LINE_STATIONS: Station[] = [
   { id: 'dak', name: 'Dakshineswar', lat: 22.6548, lng: 88.3582, line: 'Blue' },
   { id: 'bar', name: 'Baranagar', lat: 22.6457, lng: 88.3653, line: 'Blue' },
@@ -14,7 +19,7 @@ export const BLUE_LINE_STATIONS: Station[] = [
   { id: 'cen', name: 'Central', lat: 22.5684, lng: 88.3601, line: 'Blue' },
   { id: 'cha', name: 'Chandni Chowk', lat: 22.5653, lng: 88.3563, line: 'Blue' },
   { id: 'esp', name: 'Esplanade', lat: 22.5645, lng: 88.3506, line: 'Blue', isInterchange: true },
-  { id: 'par', name: 'Park Street', lat: 22.5539, lng: 88.3501, line: 'Blue', isInterchange: true },
+  { id: 'par', name: 'Park Street', lat: 22.5539, lng: 88.3501, line: 'Blue' },
   { id: 'mai', name: 'Maidan', lat: 22.5459, lng: 88.3496, line: 'Blue' },
   { id: 'rab_s', name: 'Rabindra Sadan', lat: 22.5386, lng: 88.3486, line: 'Blue' },
   { id: 'net_b', name: 'Netaji Bhavan', lat: 22.5323, lng: 88.3475, line: 'Blue' },
@@ -55,17 +60,17 @@ export const PURPLE_LINE_STATIONS: Station[] = [
   { id: 'maj', name: 'Majerhat', lat: 22.5185, lng: 88.3248, line: 'Purple' },
 ];
 
-export const YELLOW_LINE_STATIONS: Station[] = [
-  { id: 'noa_y', name: 'Noapara', lat: 22.6391, lng: 88.3904, line: 'Yellow', isInterchange: true },
-  { id: 'ddc', name: 'Dum Dum Cantonment', lat: 22.6455, lng: 88.4105, line: 'Yellow' },
-];
-
 export const ORANGE_LINE_STATIONS: Station[] = [
   { id: 'ksub_o', name: 'Kavi Subhash', lat: 22.4345, lng: 88.4083, line: 'Orange', isInterchange: true },
   { id: 'sray', name: 'Satyajit Ray', lat: 22.4545, lng: 88.4115, line: 'Orange' },
   { id: 'jnandi', name: 'Jyotirindra Nandi', lat: 22.4785, lng: 88.4152, line: 'Orange' },
   { id: 'ksuk', name: 'Kavi Sukanta', lat: 22.4925, lng: 88.4182, line: 'Orange' },
   { id: 'hmukh', name: 'Hemanta Mukhopadhyay', lat: 22.5125, lng: 88.4215, line: 'Orange' },
+];
+
+export const YELLOW_LINE_STATIONS: Station[] = [
+  { id: 'noa_y', name: 'Noapara', lat: 22.6391, lng: 88.3904, line: 'Yellow', isInterchange: true },
+  { id: 'ddc', name: 'Dum Dum Cantonment', lat: 22.6455, lng: 88.4105, line: 'Yellow' },
 ];
 
 export const METRO_LINES: MetroLine[] = [
@@ -81,7 +86,7 @@ export const ALL_STATIONS = [
   ...GREEN_LINE_STATIONS,
   ...PURPLE_LINE_STATIONS,
   ...YELLOW_LINE_STATIONS,
-  ...ORANGE_LINE_STATIONS
+  ...ORANGE_LINE_STATIONS,
 ];
 
 export const LINE_COLORS: Record<string, string> = {
@@ -89,5 +94,5 @@ export const LINE_COLORS: Record<string, string> = {
   Green: '#00a651',
   Purple: '#8e2f8e',
   Yellow: '#fdb913',
-  Orange: '#f37021'
+  Orange: '#f37021',
 };

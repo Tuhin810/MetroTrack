@@ -133,7 +133,7 @@ const LegCard: React.FC<{ leg: RouteLeg; isDark: boolean; showLegFare: boolean }
                         </div>
                         <div className="flex items-center gap-2">
                             <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isDark ? 'bg-slate-700/50 text-slate-400' : 'bg-white text-slate-500 shadow-sm border border-slate-100'}`}>
-                                {(leg.stations.length - 1) * 2.5} mins
+                                {Math.round((leg.stations.length - 1) * 2.8)} mins
                             </span>
                             {showLegFare && (
                                 <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isDark ? 'bg-slate-700/50 text-slate-400' : 'bg-white text-slate-500 shadow-sm border border-slate-100'}`}>
@@ -187,7 +187,7 @@ const LegCard: React.FC<{ leg: RouteLeg; isDark: boolean; showLegFare: boolean }
                                 </p>
                                 <p className={`text-sm font-bold ${isDark ? 'text-slate-200' : 'text-slate-900'} truncate`}>
                                     {leg.direction === leg.stations[leg.stations.length - 1].name
-                                        ? `${leg.stations.length - 1} stops journey`
+                                        ? `${leg.stations.length - 2} intermediate stations`
                                         : leg.stations[leg.stations.length - 1].name
                                     }
                                 </p>

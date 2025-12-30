@@ -8,6 +8,7 @@ import { BottomNav, Header } from './components/shared';
 import { Ticket, Sun, Moon } from 'lucide-react';
 import SplashScreen from './components/auth/SplashScreen';
 import LoginScreen from './components/auth/LoginScreen';
+import { MetroAPI } from './utils/metroApi';
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState<View>('search');
