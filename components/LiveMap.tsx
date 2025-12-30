@@ -41,29 +41,26 @@ const stationIcon = (color: string, isDark: boolean) => L.divIcon({
 const createUserIcon = (heading: number | null, isDark: boolean) => L.divIcon({
   html: `
     <div class="relative w-12 h-12 flex items-center justify-center">
-      <!-- Direction Beam / Flashlight -->
+      <!-- Direction Arrow (Google Maps Style) -->
       ${heading !== null ? `
-        <div class="absolute w-32 h-32 pointer-events-none" style="transform: rotate(${heading}deg); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0.8">
+        <div class="absolute w-full h-full flex items-center justify-center pointer-events-none" style="transform: rotate(${heading}deg); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
           <div style="
             width: 0;
             height: 0;
-            border-left: 24px solid transparent;
-            border-right: 24px solid transparent;
-            border-bottom: 60px solid rgba(59, 130, 246, 0.3);
-            position: absolute;
-            top: -24px;
-            left: 50%;
-            transform: translateX(-50%);
-            filter: blur(8px);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 35px solid #3b82f6;
+            transform: translateY(-20px);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
           "></div>
         </div>
       ` : ''}
       
       <!-- Ripple Effect -->
-      <div class="absolute w-8 h-8 bg-blue-500/20 rounded-full animate-ping"></div>
+      <div class="absolute w-10 h-10 bg-blue-500/15 rounded-full animate-ping"></div>
       
       <!-- User Dot -->
-      <div class="w-6 h-6 rounded-full border-[3px] ${isDark ? 'border-slate-800' : 'border-white'} bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.4)] z-10 flex items-center justify-center">
+      <div class="w-6 h-6 rounded-full border-[3px] ${isDark ? 'border-slate-800' : 'border-white'} bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.5)] z-10 flex items-center justify-center">
         <div class="w-1.5 h-1.5 rounded-full bg-white shadow-inner"></div>
       </div>
     </div>
