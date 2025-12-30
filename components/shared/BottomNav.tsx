@@ -62,7 +62,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeView, theme, onNavigate, is
     }
 
     return (
-        <nav className={`sticky bottom-0 w-full z-40 flex items-center justify-around py-2 border-t shadow-[0_-4px_20px_rgba(0,0,0,0.08)] ${theme === 'dark' ? 'bg-slate-900 border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]' : 'bg-black/10 border-slate-100'} backdrop-blur-sm`}>
+        <nav className={`sticky bottom-0 w-full z-40 flex items-center justify-around py-2 border-t shadow-[0_-4px_20px_rgba(0,0,0,0.08)] ${theme === 'dark' ? 'bg-slate-900 border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]' : 'bg-white/70 border-slate-100'} `}>
             {navItems.map((item) => (
                 <NavItem
                     key={item.view}
