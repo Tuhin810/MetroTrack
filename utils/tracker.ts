@@ -103,6 +103,7 @@ export interface JourneyLeg {
   stations: Station[];
   direction: string;
   distance: number;
+  fare: number;
 }
 
 export const getDetailedRoute = (from: Station, to: Station): JourneyLeg[] => {
@@ -169,6 +170,7 @@ function createLeg(stations: Station[]): JourneyLeg {
     color: LINE_COLORS[line] || '#64748b',
     stations,
     direction: stations[stations.length - 1].name,
-    distance: dist
+    distance: dist,
+    fare: calculateFare(dist)
   };
 }

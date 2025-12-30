@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { ArrowLeft, Train, ArrowDown, ChevronDown, ChevronUp, List } from 'lucide-react';
+import { ArrowLeft, Train, ArrowDown, ChevronDown, ChevronUp, List, Wallet } from 'lucide-react';
 import { Station } from '../../types';
 
 // Types
@@ -11,6 +11,7 @@ interface RouteLeg {
     direction: string;
     distance: number;
     stations: Station[];
+    fare: number;
 }
 
 interface RouteResult {
@@ -99,7 +100,7 @@ const StationPoint: React.FC<{
 };
 
 // Leg card component
-const LegCard: React.FC<{ leg: RouteLeg; isDark: boolean }> = ({ leg, isDark }) => {
+const LegCard: React.FC<{ leg: RouteLeg; isDark: boolean; showLegFare: boolean }> = ({ leg, isDark, showLegFare }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const intermediateStations = leg.stations.slice(1, -1);
     const hasIntermediate = intermediateStations.length > 0;
@@ -134,6 +135,11 @@ const LegCard: React.FC<{ leg: RouteLeg; isDark: boolean }> = ({ leg, isDark }) 
                             <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isDark ? 'bg-slate-700/50 text-slate-400' : 'bg-white text-slate-500 shadow-sm border border-slate-100'}`}>
                                 {(leg.stations.length - 1) * 2.5} mins
                             </span>
+                            {showLegFare && (
+                                <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isDark ? 'bg-slate-700/50 text-slate-400' : 'bg-white text-slate-500 shadow-sm border border-slate-100'}`}>
+                                    ₹{leg.fare}
+                                </span>
+                            )}
                             {hasIntermediate && (
                                 <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''} ${isDark ? 'bg-slate-800' : 'bg-white shadow-sm'}`}>
                                     <ChevronDown size={12} className={isDark ? 'text-slate-400' : 'text-slate-500'} />
@@ -308,7 +314,11 @@ const RouteItinerary: React.FC<RouteItineraryProps> = ({ routeResult, onBack, th
                                                 isDark={isDark}
                                             />
                                         </div>
-                                        <LegCard leg={leg} isDark={isDark} />
+                                        <LegCard
+                                            leg={leg}
+                                            isDark={isDark}
+                                            showLegFare={routeResult.legs.length > 1}
+                                        />
                                         {legIdx === routeResult.legs.length - 1 && (
                                             <div className="mt-4">
                                                 <StationPoint
