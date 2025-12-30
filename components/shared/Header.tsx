@@ -9,7 +9,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle, onProfileClick }) => {
     return (
-        <header className={`px-6 py-4 flex items-center justify-between ${theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-100'} backdrop-blur-md sticky top-0 z-30 border-b`}>
+        <header className={`px-6 py-3 flex items-center justify-between ${theme === 'dark' ? 'bg-slate-900/80 border-slate-800' : 'bg-white/80 border-slate-100'} backdrop-blur-md sticky top-0 z-30 border-b`}>
             <div className="flex items-center gap-1">
                 <div className="w-12 h-12">
                     <img src="/favicon_io/apple-touch-icon.png" alt="MetroTrack Logo" className="w-full h-full object-cover" />

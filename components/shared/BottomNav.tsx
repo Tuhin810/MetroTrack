@@ -42,7 +42,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeView, theme, onNavigate, is
         { view: 'tickets' as View, icon: <Ticket size={22} />, label: 'Tickets' },
     ];
 
-    if (isFloating) {
+    if (true) {
         return (
             <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-4 w-full max-w-md">
                 <nav className={`rounded-[28px] p-2 flex items-center justify-around shadow-2xl ${theme === 'dark' ? 'bg-black/10 shadow-black/40' : 'bg-white/70 shadow-slate-400/20'} backdrop-blur-sm`}>
